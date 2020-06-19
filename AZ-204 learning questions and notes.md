@@ -38,15 +38,15 @@
 - select disk options
     - OS disk type, standard HDD, standard SSD and premium SSD (premium is suggested)
         - larger disk sizes gives more IOPS and throughput
-    - encrpytion at rest is DEFAULT, Azure manages by default, you can use __Azure data vault__ to use your encryption key
+    - encryption at rest is DEFAULT, Azure manages by default, you can use __Azure data vault__ to use your encryption key
     - you can attach additional Disks/LUNs you customize as the main disk
 - select networking options
     - create a virtual network with a new subnet and public IOPS
-    - slect NIC security group
-    - allo public inbound ports (same as before)
+    - select NIC security group
+    - allow public inbound ports (same as before)
     - create a new (network) load balancer or use an existing
 - select management (logging) options
-    - boot, OS guest diagonostics on / off
+    - boot, OS guest diagnostics on / off
     - configure time when the VM shuts down, sends email notification if needed
     - enable VM backup
 - select advanced options (startup init logic)
@@ -55,7 +55,31 @@
     - configure VM proximity placement group (to have lower latency between VMs)
     - configure VM gen 1 / 2 (gen 2 does not yet include Disk encryption)
 - configure tags (name, value and total resources with that tag)
-- reviwe VM creation tab, size, price and options, download the VM creation JSON template and parameters files
+
+## VM connection through RDP and ARM templates
+
+- review VM creation tab, size, price and options, download the VM creation JSON (ARM) template and parameters files
+    - ARM template scripts can be in: Powershell, Ruby, Bash, and C#
+- a finished VM consists of multiple Azure resources; e.g. disk, netw. sec. group, IP, vnet, nic, VM, shutdown scheme, each of them have properties linked to them such as time of creation
+- each VM resource can be inspected and reconfigured
+- you can connect to a Windows VM through RDP, SSH or BASTION (does not need the 3389 RDP protocol) service
+- to enable RDP -> netw. sec. group. -> open 3389 port with new inbound security rule
+- VM size can be resized through VM resource options
+- EXAM NOTE: download the ARM templates of a VM and examine them in detail and understand how they work
+    - both parameters.json and template.json document
+    - you can store the template docs into a library (by default the parameters are empty and you need to apply them)
+
+TODO: test saving an ARM template and applying a parameters file to deploy another VM based on a library template, the SETTINGS section should have values applied
+
+## Encrypting a VM
+
+- create an azure key vault service (**in the same region as the VM** to make this work)
+
+TODO: create a key vault service
+
+- can store (encryption) keys, secrets and certificates
+- for encryption of a VM create a new Key value, give it a meaningful name, RSA-2048 is default without expiry options
+
 
 ## DAY 2
 
