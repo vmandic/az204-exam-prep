@@ -24,7 +24,7 @@
 - use the pricing calculator based on VM size / model
 - turn on / off whenever you wish
 - get discount for reserving 1 or 3 years upfront or not including the Windows OS license
-- create a VM with Azure Portal wizard
+- create a VM with Azure Portal wizard, the basic setup
     - subscription
     - resource group
     - VM name
@@ -35,6 +35,27 @@
     - sizing (e.g. Standard DS1 v2, from FREE tier to premium)
     - admin account details (username, password)
     - inbound network port control (none, allow selected)
+- select disk options
+    - OS disk type, standard HDD, standard SSD and premium SSD (premium is suggested)
+        - larger disk sizes gives more IOPS and throughput
+    - encrpytion at rest is DEFAULT, Azure manages by default, you can use __Azure data vault__ to use your encryption key
+    - you can attach additional Disks/LUNs you customize as the main disk
+- select networking options
+    - create a virtual network with a new subnet and public IOPS
+    - slect NIC security group
+    - allo public inbound ports (same as before)
+    - create a new (network) load balancer or use an existing
+- select management (logging) options
+    - boot, OS guest diagonostics on / off
+    - configure time when the VM shuts down, sends email notification if needed
+    - enable VM backup
+- select advanced options (startup init logic)
+    - startup PS scripts, install extensions, for Linux is "Cloud init", runs scripts
+    - configure a dedicated Host Machines
+    - configure VM proximity placement group (to have lower latency between VMs)
+    - configure VM gen 1 / 2 (gen 2 does not yet include Disk encryption)
+- configure tags (name, value and total resources with that tag)
+- reviwe VM creation tab, size, price and options, download the VM creation JSON template and parameters files
 
 ## DAY 2
 
