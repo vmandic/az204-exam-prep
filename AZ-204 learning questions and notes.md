@@ -128,3 +128,8 @@
 # you will be asked for username and password credentials also
 # other options such as size will take a default value
 ```
+
+### Azure Batch and AKS
+
+- Azure Batch and Azure Kubernetes Service is out of scope for AZ-204
+- opening the Azure Kubernetes web dashboard will not work through cloud shell, you must install it locally on the machine with `az aks install-cli` and then merge locally the AKS credentials of the target cluster and browse with `az aks browse --resource-group "rg_name" --name aksClusterName`
