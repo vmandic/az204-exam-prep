@@ -73,6 +73,11 @@
 
 > EXERCISE: test saving an ARM template and applying a parameters file to deploy another VM based on a library template, the SETTINGS section should have values applied
 
+## Using Powershell Az modules
+
+- start with installing Powershell Az module: <https://docs.microsoft.com/en-us/powershell/azure/azurerm/install-azurerm-ps?view=azurermps-6.13.0>
+- reopen PS terminal and you will have the option to login wtih `Connect-AzAccount`
+
 ## Encrypting a VM
 
 - create an azure key vault service (**in the same region as the VM** to make this work)
@@ -93,7 +98,7 @@
 >> -KeyEncryptionKeyUrl $kekurl `
 >> -KeyEncryptionKeyVaultId $keyVault.ResourceId
 
-# wait for it to finish, check in portal if VM disk is encrypted
+# wait for it to finish, check in portal or CLI if VM disk is encrypted
 ```
 
 - verify disk encryption from AZ CLI
@@ -104,4 +109,22 @@
 
 ## DAY 2
 
-- TBD
+### Creating a VM from PS Az
+
+- use the `New-AzVm` command
+- usually all commands are similar and follow a pattern such as `New-Az[some Azure resource] -name "resource_name"`
+- creating a VM should be easy as:
+
+```powershell
+> New-AzVm -resourcegroupname "az204" `
+>> -name "az204vm-01" `
+>> -location NorthEU `
+>> -virtualnetworkname "az204vnet-01" `
+>> -subnetname "default" `
+>> -securitygroupname "az204sg-01" `
+>> -publicipaddressname "az204pip-01" `
+>> -openports 80,3389
+
+# you will be asked for username and password credentials also
+# other options such as size will take a default value
+```
