@@ -56,6 +56,8 @@
     - configure VM gen 1 / 2 (gen 2 does not yet include Disk encryption)
 - configure tags (name, value and total resources with that tag)
 
+> EXERCISE: create a VM from Azure CLI and Powershell Az module
+
 ## VM connection through RDP and ARM templates
 
 - review VM creation tab, size, price and options, download the VM creation JSON (ARM) template and parameters files
@@ -69,17 +71,36 @@
     - both parameters.json and template.json document
     - you can store the template docs into a library (by default the parameters are empty and you need to apply them)
 
-TODO: test saving an ARM template and applying a parameters file to deploy another VM based on a library template, the SETTINGS section should have values applied
+> EXERCISE: test saving an ARM template and applying a parameters file to deploy another VM based on a library template, the SETTINGS section should have values applied
 
 ## Encrypting a VM
 
 - create an azure key vault service (**in the same region as the VM** to make this work)
 
-TODO: create a key vault service
+> EXERCISE: create a key vault service (same region as VM which is standard or above size) with a key (this can be done from PS or Azure CLI also)
 
 - can store (encryption) keys, secrets and certificates
 - for encryption of a VM create a new Key value, give it a meaningful name, RSA-2048 is default without expiry options
+- encrypting a VM from PS via Az PS modules:
 
+```powershell
+> $keyVault = Get-AzKeyVault -name "your_kv_name"
+> $kekurl = (Get-AzKeyVaultKey -VaultName $keyVault.VaultName -Name "your_key_name").Key.kid
+
+>  Set-AzVMDiskEncryptionExtension -resourcegroupname "your_rg_name" `
+>> -vmname "win10-01" -DiskEncryptionKeyVaultUrl $keyVault.VaultUri `
+>> -DiskEncryptionKeyVaultId $keyVault.ResourceId `
+>> -KeyEncryptionKeyUrl $kekurl `
+>> -KeyEncryptionKeyVaultId $keyVault.ResourceId
+
+# wait for it to finish, check in portal if VM disk is encrypted
+```
+
+- verify disk encryption from AZ CLI
+
+```powershell
+> az vm encryption show --resource-group "your_rg_name" --name "your_vm_name"
+```
 
 ## DAY 2
 
