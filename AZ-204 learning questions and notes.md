@@ -133,3 +133,5 @@
 
 - Azure Batch and Azure Kubernetes Service is out of scope for AZ-204
 - opening the Azure Kubernetes web dashboard will not work through cloud shell, you must install it locally on the machine with `az aks install-cli` and then merge locally the AKS credentials of the target cluster and browse with `az aks browse --resource-group "rg_name" --name aksClusterName`
+
+> EXERCISE: `git clone https://github.com/Azure-Samples/azure-voting-app-redis` and run `docker-compose up -d` to start the services locally. Create a new ACR on Azure and tag your frontend project then push it upstream to your newly created ACR instance.
