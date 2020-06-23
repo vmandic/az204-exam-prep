@@ -21,6 +21,7 @@
 
 ### Virtual Machines
 
+- IaaS (Infrastructure as a Service)
 - use the pricing calculator based on VM size / model
 - turn on / off whenever you wish
 - get discount for reserving 1 or 3 years upfront or not including the Windows OS license
@@ -135,3 +136,18 @@
 - opening the Azure Kubernetes web dashboard will not work through cloud shell, you must install it locally on the machine with `az aks install-cli` and then merge locally the AKS credentials of the target cluster and browse with `az aks browse --resource-group "rg_name" --name aksClusterName`
 
 > EXERCISE: `git clone https://github.com/Azure-Samples/azure-voting-app-redis` and run `docker-compose up -d` to start the services locally. Create a new ACR on Azure and tag your frontend project then push it upstream to your newly created ACR instance.
+
+- when pushing to ACR you are required to login from CLI first with: `az acr login --name "your_acr_name"`
+
+## Day 3
+
+- app services resource (PaaS - Platform as a Service)
+
+> IMPORTANT: spend time on comparing prices between BASIC, STANDARD and PREMIUM app service plans
+
+- test creating a new webapp resource with a STANDARD app service plan, test hosting a real web application to it (depending on which application type you selected)
+- app services can scale up (vertically) or out (horizontally), BASIC plans don't allow automatic out-scaling, you need a STANDARD+ plan
+- besides web apps we can create `web jobs` which are attached to a webapp (with its app service plan) which represent a background running job that can take care of some work
+- deployment slots allow multiple deployments per a webppp where one can seamlessly replace between deployment without any down-time
+- additional slots will create a postfix url, e.g. if your base domain is <https://myapp.azurewebsites.com>, adding a new slot with name staging will create a new subdomain site on <https://myapp-staging.azurewebsites.com>
+- deployment slots can be used to swap between slots and to easily execute A/B testing by directing 50% to each of e.g. two slots
