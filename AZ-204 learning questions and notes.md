@@ -151,3 +151,53 @@
 - deployment slots allow multiple deployments per a webppp where one can seamlessly replace between deployment without any down-time
 - additional slots will create a postfix url, e.g. if your base domain is <https://myapp.azurewebsites.com>, adding a new slot with name staging will create a new subdomain site on <https://myapp-staging.azurewebsites.com>
 - deployment slots can be used to swap between slots and to easily execute A/B testing by directing 50% to each of e.g. two slots
+- app service webapp Filesystem logging enables you to show a live log stream in the azure portal from your service standard output
+
+> EXERCISE: test creating resources such as `group`, `vm`, `appservice`, `webapp`, `storage`, `functionapp`, `batch`, `aks`, `container`, `acr`. Using `az webapp up` is a super easy utility to bring up a whole web app with an app service plan (can use existing one). You can use the `--html` option which will try to auto determine which type of app it is.
+
+## Day 4
+
+### Function apps
+
+- lighter than web apps in terms of consumption plans; you can run it on a app service plan or serverless (you are charged per function/CPU usage run).
+- 1st million runs is for FREE
+- you can choose a Windows or Linux OS, Windows allows Java and Linux Python
+- they required a storage account
+- functions can be created from inside the Azure portal, ie. you edit a .csx file (if you chose .NET/C#)
+- functions are executed on triggers; two most common ones are Webhook HTTP request and Timer based
+- possible triggers:
+    - HTTP request (Webhook)
+    - Timer (CRON syntax template based)
+    - Queue Storage
+    - Service Bus Queue
+    - Service Bus Topic
+    - Event Hub
+    - Blob Storage
+    - Cosmos DB
+    - IoT Hub (Event hub)
+    - SendGrid (email)
+    - Event Grid
+
+> EXERCISE: try creating a function app with a storage V2 LRS attached with `New-AzFunctionApp` PS cmdlet.
+
+## Day 5
+
+### CosmosDB
+
+- CosmosDB, a NoSQL azure service, choose between different DB providers/engines like SQL, MongoDB, Cassandra, Tables, or Gremlin
+- Azure Cosmos DB is Microsoft's globally distributed, multi-model database service
+- sub 10ms latency, faster than Azure Table Storage
+- enables you to elastically and independently scale throughput and storage across any number of Azure regions worldwide
+- has active multi-master replication for reads/writes of databases, ie. offers a high SLA to demanding clients
+- no manual index or schema management, all of the data is auto-indexed all the time
+- data is encrypted in rest and motion all the time
+- allows multiple levels of data consistency:
+    - strong (ASAP on all regions)
+    - bounded staleness (you control the delay of data being written to other regions)
+    - session (default, the same app has all region access, but other apps/session might have a delay)
+    - consistent prefix (ensures the order of data being written and has delays)
+    - eventual (likes, comments, no order is guaranteed but the data gets written after a delay)
+- when compared to Azure Table Storage (within a storage account) you can not control consistency like this
+
+> EXERCISE: go through V4 tutorial for SQL: <https://docs.microsoft.com/en-us/azure/cosmos-db/create-sql-api-dotnet-v4>
+
