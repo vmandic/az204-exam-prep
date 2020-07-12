@@ -17,13 +17,13 @@
 ## DAY 1
 
 - beta stands for that the results are not immediate (at the point of writing this June 2020)
-- AZ203 is valid to take until Aug 31st 2020, it is valid for to years after successfuly taking the exam
+- AZ203 is valid to take until Aug 31st 2020, it is valid for two years after successfully taking the exam
 
 ### Virtual Machines
 
 - IaaS (Infrastructure as a Service)
-- use the pricing calculator based on VM size / model
-- turn on / off whenever you wish
+- use the pricing calculator based on VM size / model to understand your needs
+- turn on / off whenever you wish, configure auto-shutdowns, configure `runbooks` to get them working in intervals
 - get discount for reserving 1 or 3 years upfront or not including the Windows OS license
 - create a VM with Azure Portal wizard, the basic setup
     - subscription
@@ -31,10 +31,10 @@
     - VM name
     - (geo) region, **does affect cost (check in calculator)**
     - availability options (separate VMs per zones)
-    - Azure Spot Instance (shortlived VM with a lower price)
+    - Azure Spot Instance (it is a shortlived VM with a lower price)
     - OS image file (e.g. Windows Server for Datacenter)
-    - sizing (e.g. Standard DS1 v2, from FREE tier to premium)
-    - admin account details (username, password)
+    - sizing (e.g. Standard DS1 v2, from FREE to premium tiers)
+    - admin account details (username and password)
     - inbound network port control (none, allow selected)
 - select disk options
     - OS disk type, standard HDD, standard SSD and premium SSD (premium is suggested)
@@ -42,7 +42,7 @@
     - encryption at rest is DEFAULT, Azure manages by default, you can use __Azure data vault__ to use your encryption key
     - you can attach additional Disks/LUNs you customize as the main disk
 - select networking options
-    - create a virtual network with a new subnet and public IOPS
+    - create a virtual network with a new subnet and public IP
     - select NIC security group
     - allow public inbound ports (same as before)
     - create a new (network) load balancer or use an existing
@@ -62,22 +62,24 @@
 ## VM connection through RDP and ARM templates
 
 - review VM creation tab, size, price and options, download the VM creation JSON (ARM) template and parameters files
-    - ARM template scripts can be in: Powershell, Ruby, Bash, and C#
+    - ARM template scripts can be in: **Powershell, Ruby, Bash, and C#**
 - a finished VM consists of multiple Azure resources; e.g. disk, netw. sec. group, IP, vnet, nic, VM, shutdown scheme, each of them have properties linked to them such as time of creation
 - each VM resource can be inspected and reconfigured
 - you can connect to a Windows VM through RDP, SSH or BASTION (does not need the 3389 RDP protocol) service
 - to enable RDP -> netw. sec. group. -> open 3389 port with new inbound security rule
 - VM size can be resized through VM resource options
-- EXAM NOTE: download the ARM templates of a VM and examine them in detail and understand how they work
-    - both parameters.json and template.json document
-    - you can store the template docs into a library (by default the parameters are empty and you need to apply them)
 
+> EXAM NOTE: download the ARM templates of a VM and examine them in detail and understand how they work
+>
+> - both parameters.json and template.json document
+> - you can store the template docs into a library (by default the parameters are empty and you need to apply them)
+>
 > EXERCISE: test saving an ARM template and applying a parameters file to deploy another VM based on a library template, the SETTINGS section should have values applied
 
 ## Using Powershell Az modules
 
 - start with installing Powershell Az module: <https://docs.microsoft.com/en-us/powershell/azure/azurerm/install-azurerm-ps?view=azurermps-6.13.0>
-- reopen PS terminal and you will have the option to login wtih `Connect-AzAccount`
+- reopen the PS terminal and you will have the option to login with the Az module cmdlet: `Connect-AzAccount`
 
 ## Encrypting a VM
 
@@ -86,13 +88,16 @@
 > EXERCISE: create a key vault service (same region as VM which is standard or above size) with a key (this can be done from PS or Azure CLI also)
 
 - can store (encryption) keys, secrets and certificates
-- for encryption of a VM create a new Key value, give it a meaningful name, RSA-2048 is default without expiry options
+- for encryption of a VM create a new Key value, give it a meaningful name, RSA-2048 is default algorithm, without expiry options
 - encrypting a VM from PS via Az PS modules:
 
 ```powershell
 > $keyVault = Get-AzKeyVault -name "your_kv_name"
 > $kekurl = (Get-AzKeyVaultKey -VaultName $keyVault.VaultName -Name "your_key_name").Key.kid
 
+# 'kek' stands for key encryption key
+
+# encrypt the VMs drive:
 >  Set-AzVMDiskEncryptionExtension -resourcegroupname "your_rg_name" `
 >> -vmname "win10-01" -DiskEncryptionKeyVaultUrl $keyVault.VaultUri `
 >> -DiskEncryptionKeyVaultId $keyVault.ResourceId `
@@ -117,6 +122,7 @@
 - creating a VM should be easy as:
 
 ```powershell
+# create a new VM from Az module cmdlets:
 > New-AzVm -resourcegroupname "az204" `
 >> -name "az204vm-01" `
 >> -location NorthEU `
@@ -184,20 +190,20 @@
 
 ### CosmosDB
 
-- CosmosDB, a NoSQL azure service, choose between different DB providers/engines like SQL, MongoDB, Cassandra, Tables, or Gremlin
+- CosmosDB, a NoSQL azure service, choose between different DB providers/engines like SQL, MongoDB, Cassandra, (Azure) Tables, or Gremlin
 - Azure Cosmos DB is Microsoft's globally distributed, multi-model database service
-- sub 10ms latency, faster than Azure Table Storage
+- sub 10ms latency, faster than Azure Table Storage (a service within the Azure storage account)
 - enables you to elastically and independently scale throughput and storage across any number of Azure regions worldwide
 - has active multi-master replication for reads/writes of databases, ie. offers a high SLA to demanding clients
 - no manual index or schema management, all of the data is auto-indexed all the time
 - data is encrypted in rest and motion all the time
-- allows multiple levels of data consistency:
-    - strong (ASAP on all regions)
+- core feature besides blazing low latency is it allows **multiple levels of data consistency**:
+    - strong (ASAP on all regions, but can take time due to copying, multi-master)
     - bounded staleness (you control the delay of data being written to other regions)
     - session (default, the same app has all region access, but other apps/session might have a delay)
-    - consistent prefix (ensures the order of data being written and has delays)
+    - consistent prefix (ensures the order of data being written and has delays due to that ordering)
     - eventual (likes, comments, no order is guaranteed but the data gets written after a delay)
-- when compared to Azure Table Storage (within a storage account) you can not control consistency like this
+- when compared to Azure Table Storage (within a storage account) **you can not control consistency like this** with the storage account
 
 > EXERCISE: go through V4 tutorial for SQL: <https://docs.microsoft.com/en-us/azure/cosmos-db/create-sql-api-dotnet-v4>
 
